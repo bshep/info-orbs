@@ -10,6 +10,12 @@
 
 #define MAX_STOCKS 5
 
+enum STOCK_WIDGET_MODE {
+    STOCK_PERCENT_CHANGE,
+    STOCK_VALUE_CHANGE,
+    STOCK_VOLUME
+};
+
 class StockWidget : public Widget {
    public:
     StockWidget(ScreenManager &manager);
@@ -26,7 +32,9 @@ class StockWidget : public Widget {
     unsigned long m_stockDelay = 900000;  //default to 15m between updates
     unsigned long m_stockDelayPrev = 0;
 
+
     StockDataModel m_stocks[MAX_STOCKS];
     int8_t m_stockCount;
+    int8_t m_mode = STOCK_PERCENT_CHANGE;
 };
 #endif  // STOCK_WIDGET_H

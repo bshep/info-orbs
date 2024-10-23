@@ -52,7 +52,10 @@ void StockWidget::update(bool force) {
 }
 
 void StockWidget::changeMode() {
-    update(true);
+    m_mode = (m_mode + 1) % 3;
+
+    // update(true);
+    draw(true);
 }
 
 void StockWidget::getStockData(StockDataModel &stock) {
@@ -73,7 +76,7 @@ void StockWidget::getStockData(StockDataModel &stock) {
                 stock.setCurrentPrice(doc["last"][0].as<float>());
                 stock.setPercentChange(doc["changepct"][0].as<float>());
                 stock.setPriceChange(doc["change"][0].as<float>());
-                stock.setVolume(doc["volume"][0].as<float>());
+                stock.setVolume(doc["volume"][0].as<float>()/1000);
             } else {
                 Serial.println("skipping invalid data for: " + stock.getSymbol());
             }
@@ -112,13 +115,36 @@ void StockWidget::displayStock(int8_t displayIndex, StockDataModel &stock, uint3
     display.drawString(stock.getSymbol(), centre, 27, 1);
     display.drawString("$" + stock.getCurrentPrice(2), centre, 51 + display.fontHeight(1), 1);
 
-    if (stock.getPercentChange() < 0.0) {
-        display.setTextColor(TFT_RED, TFT_BLACK);
-        display.fillTriangle(120, 220, 140, 185, 100, 185, TFT_RED);
-    } else {
-        display.setTextColor(TFT_GREEN, TFT_BLACK);
-        display.fillTriangle(120, 185, 140, 220, 100, 220, TFT_GREEN);
+    switch(m_mode) {
+        case STOCK_WIDGET_MODE::STOCK_PERCENT_CHANGE:
+            if (stock.getPercentChange() < 0.0) {
+                display.setTextColor(TFT_RED, TFT_BLACK);
+                display.fillTriangle(120, 220, 140, 185, 100, 185, TFT_RED);
+            } else {
+                display.setTextColor(TFT_GREEN, TFT_BLACK);
+                display.fillTriangle(120, 185, 140, 220, 100, 220, TFT_GREEN);
+            }
+        
+            display.drawString(stock.getPercentChange(2) + "%", centre, 147, 1);
+
+            break;
+        case STOCK_WIDGET_MODE::STOCK_VALUE_CHANGE:
+            if (stock.getPriceChange() < 0.0) {
+                display.setTextColor(TFT_RED, TFT_BLACK);
+                display.fillTriangle(120, 220, 140, 185, 100, 185, TFT_RED);
+            } else {
+                display.setTextColor(TFT_GREEN, TFT_BLACK);
+                display.fillTriangle(120, 185, 140, 220, 100, 220, TFT_GREEN);
+            }
+
+            display.drawString("$" + stock.getPriceChange(2), centre, 147, 1);
+
+            break;
+        case STOCK_WIDGET_MODE::STOCK_VOLUME:
+            display.setTextColor(TFT_YELLOW, TFT_BLACK);
+            display.fillRect(centre-20, 185, 40, 40, TFT_YELLOW);
+            display.drawString(stock.getVolume(1) + "K", centre, 147, 1);
+            break;
     }
 
-    display.drawString(stock.getPercentChange(2) + "%", centre, 147, 1);
 }
