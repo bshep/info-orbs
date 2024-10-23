@@ -23,6 +23,8 @@ Button buttonLeft(BUTTON_LEFT);
 Button buttonRight(BUTTON_RIGHT);
 
 GlobalTime *globalTime; // Initialize the global time
+time_t lastButtonTime;
+bool screensAsleep = false;
 
 String connectingString{""};
 
@@ -78,6 +80,7 @@ void setup() {
   wifiWidget->setup();
 
   globalTime = GlobalTime::getInstance();
+  lastButtonTime = globalTime->getUnixEpoch();
 
   widgetSet->add(new ClockWidget(*sm));
   widgetSet->add(new StockWidget(*sm));
@@ -91,8 +94,24 @@ void setup() {
 #endif
 }
 
-void loop() {
-  if (wifiWidget->isConnected() == false) {
+void screenSleep(bool enable)
+{
+  sm->selectAllScreens();
+  if (enable)
+  {
+    sm->getDisplay().writecommand(0x28);
+  }
+  else
+  {
+    sm->getDisplay().writecommand(0x29);
+  }
+  screensAsleep = enable;
+}
+
+void loop()
+{
+  if (wifiWidget->isConnected() == false)
+  {
     wifiWidget->update();
     wifiWidget->draw();
     widgetSet->setClearScreensOnDrawCurrent(); //clear screen after wifiWidget
@@ -105,15 +124,23 @@ void loop() {
 
     if (buttonLeft.pressed()) {
       Serial.println("Left button pressed");
-      widgetSet->prev();
+      !screensAsleep ? widgetSet->prev() : screenSleep(false);
+      lastButtonTime = globalTime->getUnixEpoch();
     }
     if (buttonOK.pressed()) {
       Serial.println("OK button pressed");
-      widgetSet->changeMode();
+      !screensAsleep ? widgetSet->changeMode() : screenSleep(false);
+      lastButtonTime = globalTime->getUnixEpoch();
     }
     if (buttonRight.pressed()) {
       Serial.println("Right button pressed");
-      widgetSet->next();
+      !screensAsleep ? widgetSet->next() : screenSleep(false);
+      lastButtonTime = globalTime->getUnixEpoch();
+    }
+
+    if (globalTime->getUnixEpoch() - lastButtonTime > SCREEN_TIMEOUT && screensAsleep == false)
+    {
+      screenSleep(true);
     }
 
     widgetSet->updateCurrent();
