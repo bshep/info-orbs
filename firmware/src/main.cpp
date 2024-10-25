@@ -24,7 +24,7 @@ Button buttonRight(BUTTON_RIGHT);
 
 GlobalTime *globalTime; // Initialize the global time
 time_t lastButtonTime;
-bool screensAsleep = false;
+bool isScreensAsleep = false;
 
 String connectingString{""};
 
@@ -94,18 +94,15 @@ void setup() {
 #endif
 }
 
-void screenSleep(bool enable)
+void setScreenSleep(bool enable)
 {
   sm->selectAllScreens();
-  if (enable)
-  {
+  if (enable) {
     sm->getDisplay().writecommand(0x28);
-  }
-  else
-  {
+  } else {
     sm->getDisplay().writecommand(0x29);
   }
-  screensAsleep = enable;
+  isScreensAsleep = enable;
 }
 
 void loop()
@@ -124,23 +121,34 @@ void loop()
 
     if (buttonLeft.pressed()) {
       Serial.println("Left button pressed");
-      !screensAsleep ? widgetSet->prev() : screenSleep(false);
+      if (!isScreensAsleep) {
+        widgetSet->prev();
+      } else {
+        setScreenSleep(false);
+      }
       lastButtonTime = globalTime->getUnixEpoch();
     }
     if (buttonOK.pressed()) {
       Serial.println("OK button pressed");
-      !screensAsleep ? widgetSet->changeMode() : screenSleep(false);
+      if (!isScreensAsleep) {
+        widgetSet->changeMode();
+      } else {
+        setScreenSleep(false);
+      }
       lastButtonTime = globalTime->getUnixEpoch();
     }
     if (buttonRight.pressed()) {
       Serial.println("Right button pressed");
-      !screensAsleep ? widgetSet->next() : screenSleep(false);
+      if (!isScreensAsleep) {
+        widgetSet->next();
+      } else {
+        setScreenSleep(false);
+      }
       lastButtonTime = globalTime->getUnixEpoch();
     }
 
-    if (globalTime->getUnixEpoch() - lastButtonTime > SCREEN_TIMEOUT && screensAsleep == false)
-    {
-      screenSleep(true);
+    if (globalTime->getUnixEpoch() - lastButtonTime > SCREEN_TIMEOUT && isScreensAsleep == false) {
+      setScreenSleep(true);
     }
 
     widgetSet->updateCurrent();
