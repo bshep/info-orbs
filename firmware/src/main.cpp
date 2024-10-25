@@ -23,7 +23,7 @@ Button buttonLeft(BUTTON_LEFT);
 Button buttonRight(BUTTON_RIGHT);
 
 GlobalTime *globalTime; // Initialize the global time
-time_t lastButtonTime;
+time_t lastButtonTime = 0;
 bool isScreensAsleep = false;
 
 String connectingString{""};
@@ -80,7 +80,6 @@ void setup() {
   wifiWidget->setup();
 
   globalTime = GlobalTime::getInstance();
-  lastButtonTime = globalTime->getUnixEpoch();
 
   widgetSet->add(new ClockWidget(*sm));
   widgetSet->add(new StockWidget(*sm));
@@ -118,6 +117,9 @@ void loop()
       widgetSet->initializeAllWidgetsData();
     }
     globalTime->updateTime();
+    if (lastButtonTime == 0 ) {
+      lastButtonTime = globalTime->getUnixEpoch();
+    }
 
     if (buttonLeft.pressed()) {
       Serial.println("Left button pressed");
