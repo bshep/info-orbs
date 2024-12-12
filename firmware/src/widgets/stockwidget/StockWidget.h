@@ -34,7 +34,6 @@ private:
     unsigned long m_stockDelay = 900000; // default to 15m between updates
     unsigned long m_stockDelayPrev = 0;
 
-
     StockDataModel m_stocks[MAX_STOCKS];
     int8_t m_stockCount;
     int8_t m_mode = STOCK_PERCENT_CHANGE;
