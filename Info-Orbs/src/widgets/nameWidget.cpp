@@ -21,7 +21,8 @@ void NameWidget::draw(bool force) {
 
     for (int i = 0; i < 5; i++) {
         m_manager.selectScreen(i);
-        display.setTextColor(TFT_BLUE);
+        display.setTextColor(TFT_GREEN);
+        display.setTextSize(4);
         display.drawString(s_name, 120, 120, 2);
     }
 }
