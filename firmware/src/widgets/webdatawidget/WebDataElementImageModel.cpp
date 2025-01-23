@@ -2,8 +2,8 @@
 
 #include <HTTPClient.h>
 #include <LittleFS.h>
-#include <WiFi.h>
 #include <TJpg_Decoder.h>
+#include <WiFi.h>
 
 int32_t WebDataElementImageModel::getX() {
     return m_x;
@@ -65,7 +65,7 @@ void WebDataElementImageModel::parseData(const JsonObject &doc, int32_t defaultC
     }
     if (doc["forceReload"].is<bool>()) {
         setForce(doc["forceReload"].as<bool>());
-    }  
+    }
     if (doc["scale"].is<uint8_t>()) {
         setScale(doc["scale"].as<uint8_t>());
     }
@@ -86,12 +86,13 @@ void WebDataElementImageModel::draw(ScreenManager &manager) {
         getFile(m_image, "/image.jpg", m_force);
     }
 
-    fs:File f = LittleFS.open("/image.jpg","r");
+fs:
+    File f = LittleFS.open("/image.jpg", "r");
 
     uint32_t jpgDataSize = f.size();
-    uint8_t *jpgData = (uint8_t *)malloc(jpgDataSize);
+    uint8_t *jpgData = (uint8_t *) malloc(jpgDataSize);
 
-    f.read((uint8_t*)jpgData, jpgDataSize);
+    f.read((uint8_t *) jpgData, jpgDataSize);
 
     TJpgDec.setJpgScale(getScale());
     uint16_t w = 0, h = 0;
@@ -105,7 +106,7 @@ void WebDataElementImageModel::draw(ScreenManager &manager) {
 // Fetch a file from the URL given and save it in LittleFS
 // Return 1 if a web fetch was needed or 0 if file already exists
 bool getFile(String url, String filename, bool force) {
-    if(!LittleFS.begin(true)) {
+    if (!LittleFS.begin(true)) {
         Serial.println("LittleFS Mount Failed");
         return 0;
     } else {
@@ -113,9 +114,9 @@ bool getFile(String url, String filename, bool force) {
     }
 
     // If it exists then no need to fetch it
-    if (LittleFS.exists(filename) == true ) {
+    if (LittleFS.exists(filename) == true) {
         Serial.println("Found " + filename);
-        if ( force == true ) {
+        if (force == true) {
             Serial.println("Forced reload by config.");
         } else {
             return 0;
