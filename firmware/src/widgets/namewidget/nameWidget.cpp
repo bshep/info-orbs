@@ -1,5 +1,5 @@
 
-#include "widgets/NameWidget.h"
+#include "namewidget/nameWidget.h"
 
 NameWidget::NameWidget(ScreenManager &manager, String name) : Widget(manager) {
     s_name = name;
@@ -17,16 +17,25 @@ void NameWidget::changeMode() {
 }
 
 void NameWidget::draw(bool force) {
-    TFT_eSPI &display = m_manager.getDisplay();
+    // TFT_eSPI &display = m_manager.getDisplay();
+
 
     for (int i = 0; i < 5; i++) {
         m_manager.selectScreen(i);
-        display.setTextColor(TFT_GREEN);
-        display.setTextSize(4);
-        display.drawString(s_name, 120, 120, 2);
+        m_manager.setLegacyTextColor(TFT_GREEN);
+        m_manager.setLegacyTextSize(4);
+        m_manager.drawLegacyString(s_name, 120, 120, 2);
     }
 }
 
 void NameWidget::update(bool force) {
     return;
+}
+
+void NameWidget::buttonPressed(uint8_t buttonId, ButtonState state) {
+
+}
+
+String NameWidget::getName() {
+    return "Name Widget";
 }
