@@ -8,7 +8,7 @@
 #include "utils.h"
 
 class NameWidget : public Widget {
-   public:
+public:
     NameWidget(ScreenManager &manager, String name);
     ~NameWidget() override;
     void setup() override;
@@ -19,11 +19,11 @@ class NameWidget : public Widget {
 
     void changeMode();
 
-   private:
+private:
     int m_lastUpdate = 0;
     int m_updateDelay = 1000;
     String s_name;
     int32_t m_defaultColor = TFT_WHITE;
     int32_t m_defaultBackground = TFT_BLACK;
 };
-#endif  // NAME_WIDGET_H
+#endif // NAME_WIDGET_H

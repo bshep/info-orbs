@@ -6,10 +6,10 @@
 #include "clockwidget/ClockWidget.h"
 #include "config_helper.h"
 #include "icons.h"
+#include "namewidget/nameWidget.h"
 #include "weatherwidget/WeatherWidget.h"
 #include "webdatawidget/WebDataWidget.h"
 #include "wifiwidget/WifiWidget.h"
-#include "namewidget/nameWidget.h"
 #include <Arduino.h>
 
 #ifdef STOCK_TICKER_LIST
