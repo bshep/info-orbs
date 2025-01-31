@@ -133,6 +133,9 @@ void setup() {
 #ifdef WEB_DATA_WIDGET_URL
     widgetSet->add(new WebDataWidget(*sm, WEB_DATA_WIDGET_URL));
 #endif
+#ifdef WEB_DATA_WIDGET_URL2
+    widgetSet->add(new WebDataWidget(*sm, WEB_DATA_WIDGET_URL2));
+#endif
 #ifdef WEB_DATA_STOCK_WIDGET_URL
     widgetSet->add(new WebDataWidget(*sm, WEB_DATA_STOCK_WIDGET_URL));
 #endif
