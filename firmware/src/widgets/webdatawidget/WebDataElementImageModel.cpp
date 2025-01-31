@@ -81,13 +81,14 @@ void WebDataElementImageModel::parseData(const JsonObject &doc, int32_t defaultC
 bool getFile(String url, String filename, bool force);
 
 void WebDataElementImageModel::draw(ScreenManager &manager) {
-    // TODO implement displaying an image
+    int lastSlash = m_image.lastIndexOf('/');
+    String filename = "/" + m_image.substring(lastSlash);
+
     if (m_changed) {
-        getFile(m_image, "/image.jpg", m_force);
+        getFile(m_image, filename, m_force);
     }
 
-fs:
-    File f = LittleFS.open("/image.jpg", "r");
+    File f = LittleFS.open(filename, "r");
 
     uint32_t jpgDataSize = f.size();
     uint8_t *jpgData = (uint8_t *) malloc(jpgDataSize);
