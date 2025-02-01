@@ -6,7 +6,6 @@
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 
-
 class NameWidget : public Widget {
 public:
     NameWidget(ScreenManager &manager, String name);
