@@ -1,9 +1,9 @@
 #ifndef NAME_WIDGET_H
 #define NAME_WIDGET_H
 
+#include "Widget.h"
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-#include "Widget.h"
 
 #include "utils.h"
 
