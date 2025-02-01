@@ -1,11 +1,11 @@
 #ifndef NAME_WIDGET_H
 #define NAME_WIDGET_H
 
+#include "Utils.h"
 #include "Widget.h"
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 
-#include "utils.h"
 
 class NameWidget : public Widget {
 public:
