@@ -3,7 +3,7 @@
 
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-#include <widget.h>
+#include "Widget.h"
 
 #include "utils.h"
 
