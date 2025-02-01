@@ -80,29 +80,33 @@ void setup() {
     Serial.begin(115200);
     Serial.println();
     Serial.println("Starting up...");
+    Serial.println("Setup JPG...");
 
     TJpgDec.setSwapBytes(true); // JPEG rendering setup
     TJpgDec.setCallback(tft_output);
+
+    Serial.println("Setup Buttons...");
+
     setupButtons();
+
+    Serial.println("Init ScreenManager...");
 
     sm = new ScreenManager(tft);
     sm->fillAllScreens(TFT_BLACK);
     sm->setFontColor(TFT_WHITE);
 
     sm->selectScreen(0);
-    sm->drawCentreString("Welcome", ScreenCenterX, ScreenCenterY, 29);
-
-    sm->selectScreen(1);
+    // sm->drawCentreString("Welcome", ScreenCenterX, ScreenCenterY, 29);
     sm->drawCentreString("Info Orbs", ScreenCenterX, ScreenCenterY - 50, 22);
     sm->drawCentreString("by", ScreenCenterX, ScreenCenterY - 5, 22);
     sm->drawCentreString("brett.tech", ScreenCenterX, ScreenCenterY + 30, 22);
     sm->setFontColor(TFT_RED);
     sm->drawCentreString("version: 1.1.0", ScreenCenterX, ScreenCenterY + 65, 14);
 
-    sm->selectScreen(2);
+    // sm->selectScreen(2);
 
-    TJpgDec.setJpgScale(1);
-    TJpgDec.drawJpg(0, 0, logo_start, logo_end - logo_start);
+    // TJpgDec.setJpgScale(1);
+    // TJpgDec.drawJpg(0, 0, logo_start, logo_end - logo_start);
 
     widgetSet = new WidgetSet(sm);
 
@@ -121,16 +125,19 @@ void setup() {
 
     globalTime = GlobalTime::getInstance();
 
-    widgetSet->add(new ClockWidget(*sm));
+    // widgetSet->add(new ClockWidget(*sm));
 #ifdef PARQET_PORTFOLIO_ID
     widgetSet->add(new ParqetWidget(*sm));
 #endif
 #ifdef STOCK_TICKER_LIST
     widgetSet->add(new StockWidget(*sm));
 #endif
-    widgetSet->add(new WeatherWidget(*sm));
+    // widgetSet->add(new WeatherWidget(*sm));
 #ifdef WEB_DATA_WIDGET_URL
     widgetSet->add(new WebDataWidget(*sm, WEB_DATA_WIDGET_URL));
+#endif
+#ifdef WEB_DATA_WIDGET_URL2
+    widgetSet->add(new WebDataWidget(*sm, WEB_DATA_WIDGET_URL2));
 #endif
 #ifdef WEB_DATA_STOCK_WIDGET_URL
     widgetSet->add(new WebDataWidget(*sm, WEB_DATA_STOCK_WIDGET_URL));

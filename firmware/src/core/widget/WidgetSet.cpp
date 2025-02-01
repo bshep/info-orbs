@@ -64,7 +64,7 @@ void WidgetSet::switchWidget() {
 }
 
 void WidgetSet::showCenteredLine(int screen, const String &text) {
-    m_screenManager->selectScreen(screen);
+    m_screenManager->selectScreen(0);
     m_screenManager->fillScreen(TFT_BLACK);
     m_screenManager->setFontColor(TFT_WHITE);
     m_screenManager->drawCentreString(text, ScreenCenterX, ScreenCenterY, 22);

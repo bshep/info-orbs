@@ -20,9 +20,16 @@ public:
     void parseData(const JsonObject &doc, int32_t defaultColor, int32_t defaultBackground) override;
     void draw(ScreenManager &manager) override;
 
+    void setForce(bool value);
+
+    void setScale(uint8_t scale);
+    uint8_t getScale();
+
 private:
     int32_t m_x = 0;
     int32_t m_y = 0;
     String m_image = "";
+    bool m_force = false;
+    uint8_t m_scale = 1;
 };
 #endif

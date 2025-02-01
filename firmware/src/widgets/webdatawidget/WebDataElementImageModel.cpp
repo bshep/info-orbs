@@ -2,6 +2,7 @@
 
 #include <HTTPClient.h>
 #include <LittleFS.h>
+#include <TJpg_Decoder.h>
 #include <WiFi.h>
 
 int32_t WebDataElementImageModel::getX() {
@@ -37,6 +38,21 @@ void WebDataElementImageModel::setImage(String image) {
     }
 }
 
+void WebDataElementImageModel::setForce(bool value) {
+    m_force = value;
+}
+
+void WebDataElementImageModel::setScale(uint8_t scale) {
+    if (m_scale != scale) {
+        m_scale = scale;
+        m_changed = true;
+    }
+}
+
+uint8_t WebDataElementImageModel::getScale() {
+    return m_scale;
+}
+
 void WebDataElementImageModel::parseData(const JsonObject &doc, int32_t defaultColor, int32_t defaultBackground) {
     if (doc["x"].is<int32_t>()) {
         setX(doc["x"].as<int32_t>());
@@ -47,6 +63,13 @@ void WebDataElementImageModel::parseData(const JsonObject &doc, int32_t defaultC
     if (const char *image = doc["image"]) {
         setImage(image);
     }
+    if (doc["forceReload"].is<bool>()) {
+        setForce(doc["forceReload"].as<bool>());
+    }
+    if (doc["scale"].is<uint8_t>()) {
+        setScale(doc["scale"].as<uint8_t>());
+    }
+
     // if (const char* imageUrl = doc["imageUrl"]) {
     //     setImageUrl(imageUrl);
     // }
@@ -55,18 +78,50 @@ void WebDataElementImageModel::parseData(const JsonObject &doc, int32_t defaultC
     // }
 }
 
+bool getFile(String url, String filename, bool force);
+
 void WebDataElementImageModel::draw(ScreenManager &manager) {
-    // TODO implement displaying an image
+    int lastSlash = m_image.lastIndexOf('/');
+    String filename = "/" + m_image.substring(lastSlash);
+
+    if (m_changed) {
+        getFile(m_image, filename, m_force);
+    }
+
+    File f = LittleFS.open(filename, "r");
+
+    uint32_t jpgDataSize = f.size();
+    uint8_t *jpgData = (uint8_t *) malloc(jpgDataSize);
+
+    f.read((uint8_t *) jpgData, jpgDataSize);
+
+    TJpgDec.setJpgScale(getScale());
+    uint16_t w = 0, h = 0;
+    TJpgDec.getJpgSize(&w, &h, jpgData, jpgDataSize);
+    TJpgDec.drawJpg(m_x, m_y, jpgData, jpgDataSize);
+
+    free(jpgData);
     //  display.drawImage(getImage(), getX(), getY());
 }
 
 // Fetch a file from the URL given and save it in LittleFS
 // Return 1 if a web fetch was needed or 0 if file already exists
-bool getFile(String url, String filename) {
+bool getFile(String url, String filename, bool force) {
+    if (!LittleFS.begin(true)) {
+        Serial.println("LittleFS Mount Failed");
+        return 0;
+    } else {
+        Serial.println("LittleFS Initialized");
+    }
+
     // If it exists then no need to fetch it
     if (LittleFS.exists(filename) == true) {
         Serial.println("Found " + filename);
-        return 0;
+        if (force == true) {
+            Serial.println("Forced reload by config.");
+        } else {
+            return 0;
+        }
     }
 
     Serial.println("Downloading " + filename + " from " + url);

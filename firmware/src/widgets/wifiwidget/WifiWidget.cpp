@@ -4,7 +4,7 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 
 const int lineHeight = 40;
-const int statusScreenIndex = 3;
+const int statusScreenIndex = 0;
 const int fontSize = 19;
 const int messageDelay = 5000;
 
@@ -65,7 +65,7 @@ void WifiWidget::setup() {
         m_manager.selectScreen(statusScreenIndex);
         m_manager.clearScreen();
         m_manager.drawCentreString("Configure", ScreenCenterX, ScreenCenterY - lineHeight, fontSize);
-        m_manager.selectScreen(statusScreenIndex + 1);
+        m_manager.selectScreen(statusScreenIndex);
         m_manager.drawCentreString("Connect", ScreenCenterX, ScreenCenterY - lineHeight * 2, fontSize);
         m_manager.drawCentreString("phone or PC", ScreenCenterX, ScreenCenterY - lineHeight, fontSize);
         m_manager.drawCentreString("to WiFi network:", ScreenCenterX, ScreenCenterY, fontSize);
@@ -114,8 +114,6 @@ void WifiWidget::draw(bool force) {
         m_hasDisplayedSuccess = true;
         m_manager.clearScreen();
         m_manager.drawCentreString("Success", ScreenCenterX, ScreenCenterY, fontSize);
-        m_manager.selectScreen(statusScreenIndex + 1);
-        m_manager.clearScreen();
         m_manager.drawCentreString("IP Address", ScreenCenterX, ScreenCenterY - lineHeight, fontSize);
         m_manager.drawCentreString(m_ipaddress, ScreenCenterX, ScreenCenterY + lineHeight, fontSize);
         Serial.println();

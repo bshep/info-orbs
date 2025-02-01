@@ -8,7 +8,7 @@
 #include <SPI.h>
 #include <TFT_eSPI.h>
 
-#define NUM_SCREENS 5
+#define NUM_SCREENS 1
 
 #ifndef DEFAULT_FONT
     #define DEFAULT_FONT ROBOTO_REGULAR
